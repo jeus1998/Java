@@ -121,6 +121,16 @@ public class BasicStreamAPI {
 		System.out.println(statistics.getSum());
 		System.out.println(statistics.getCount());
 
+		// Collectors.groupingBy()
+		Map<Integer, List<Product>> groupingBy = productList.stream()
+			.collect(Collectors.groupingBy(Product::amount));
+		System.out.println("groupingBy = " + groupingBy);
+
+		// Collectors.partitioningBy()
+		Map<Boolean, List<Product>> partitioningBy = productList.stream()
+			.collect(Collectors.partitioningBy(product -> product.name().equals("orange")));
+		System.out.println("partitioningBy = " + partitioningBy);
+
 	}
 }
 
