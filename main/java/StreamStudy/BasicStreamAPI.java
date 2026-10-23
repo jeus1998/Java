@@ -131,6 +131,74 @@ public class BasicStreamAPI {
 			.collect(Collectors.partitioningBy(product -> product.name().equals("orange")));
 		System.out.println("partitioningBy = " + partitioningBy);
 
+		System.out.println("Match Function----->");
+		// Match
+		List<String> names = Arrays.asList("Eric", "Elena", "Java");
+		System.out.println(names.stream().anyMatch(name -> name.equals("Eric")));  // true
+		System.out.println(names.stream().allMatch(name -> name.equals("Eric")));  // false
+		System.out.println(names.stream().noneMatch(name -> name.equals("Eric"))); // false
+
+		// forEach
+		names.stream().forEach(System.out::println);
+
+		// flatmap
+		// [[a, b, c], [d, e]]
+		List<List<String>> flatMapSampleData1 = Arrays.asList(
+			Arrays.asList("a", "b", "c"), Arrays.asList("d", "e"));
+
+		// [a, b, c, d, e]
+		List<String> flatMapSampleResult1 = flatMapSampleData1
+			.stream()
+			.flatMap(Collection::stream)
+			.toList();
+		System.out.println("flatMapSampleResult1 = " + flatMapSampleResult1);
+
+		String[][] flatMapSampleResul2 = new String[][]{{"a", "b", "c" }, {"d", "e"}};
+		List<String> flatMapSampleResult2 = Arrays.stream(flatMapSampleResul2).flatMap(Arrays::stream)
+			.toList();
+		System.out.println("flatMapSampleResult2 = " + flatMapSampleResult2);
+
+		Stream.of("Hello", "World")
+			.map(w -> w.split(""))
+			.flatMap(Arrays::stream)
+			.distinct()
+			.forEach(System.out::println);
+
+		// reduce(accumulator)
+		IntStream.range(1, 4)  // 1, 2, 3
+			.reduce(Integer::sum).ifPresent(System.out::println);
+
+		// reduce(identity, accumulator)
+		System.out.println(IntStream.range(1, 4) // 1, 2, 3
+			.reduce(-6, Integer::sum));  // 0
+
+		// reduce(identity, accumulator)
+		System.out.println("print reduce(identity, accumulator)");
+		System.out.println(IntStream.range(1, 4) // 1, 2, 3
+			.reduce(-6, (a, b) -> {
+				System.out.println("a=" + a + ", b=" + b);
+				return a + b;
+			}));  // 0
+
+		// reduce(identity, accumulator, combiner)
+		Stream.of(1, 2, 3)
+			.reduce(-6, Integer::sum, (a, b) -> {
+				System.out.println("combiner call1");
+				System.out.println(Thread.currentThread().getName());
+				return a + b;
+			});
+		Stream.of(1, 2, 3)
+			.parallel()
+			.reduce(-6, Integer::sum, (a, b) -> {
+				System.out.println("combiner call2");
+				System.out.println(Thread.currentThread().getName());
+				return a + b;
+			});
+
+		System.out.println(Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+			.parallel()
+			.reduce(10,  Integer::sum, Integer::sum));
+
 	}
 }
 
